@@ -1,77 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FaGithub, FaTwitter, FaLinkedin, FaShieldAlt } from 'react-icons/fa';
-
-export const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
-  
-  return (
-    <FooterSection>
-      <Container>
-        <FooterTop>
-          <FooterAbout>
-            <FooterLogo>
-              <FaShieldAlt />
-              <span>MetaClean Pro</span>
-            </FooterLogo>
-            <FooterAboutText>
-              The most secure and private way to remove EXIF metadata from your images. 
-              Your privacy is our top priority.
-            </FooterAboutText>
-            <SocialLinks>
-              <SocialLink href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                <FaGithub />
-              </SocialLink>
-              <SocialLink href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-                <FaTwitter />
-              </SocialLink>
-              <SocialLink href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                <FaLinkedin />
-              </SocialLink>
-            </SocialLinks>
-          </FooterAbout>
-          
-          <FooterLinks>
-            <FooterLinksColumn>
-              <FooterLinksTitle>Product</FooterLinksTitle>
-              <FooterLink href="#features">Features</FooterLink>
-              <FooterLink href="#how-it-works">How It Works</FooterLink>
-              <FooterLink href="#faq">FAQ</FooterLink>
-              <FooterLink href="#">Pricing</FooterLink>
-            </FooterLinksColumn>
-            
-            <FooterLinksColumn>
-              <FooterLinksTitle>Company</FooterLinksTitle>
-              <FooterLink href="#">About Us</FooterLink>
-              <FooterLink href="#">Blog</FooterLink>
-              <FooterLink href="#contact">Contact</FooterLink>
-              <FooterLink href="#">Careers</FooterLink>
-            </FooterLinksColumn>
-            
-            <FooterLinksColumn>
-              <FooterLinksTitle>Legal</FooterLinksTitle>
-              <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
-              <FooterLink href="#">Terms of Service</FooterLink>
-              <FooterLink href="#">Cookie Policy</FooterLink>
-              <FooterLink href="#">GDPR</FooterLink>
-            </FooterLinksColumn>
-          </FooterLinks>
-        </FooterTop>
-        
-        <FooterBottom>
-          <Copyright>
-            &copy; {currentYear} MetaClean Pro. All rights reserved.
-          </Copyright>
-          <FooterLegalLinks>
-            <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
-            <FooterLink href="#">Terms of Service</FooterLink>
-            <FooterLink href="#">Cookie Policy</FooterLink>
-          </FooterLegalLinks>
-        </FooterBottom>
-      </Container>
-    </FooterSection>
-  );
-};
+import { Link, useLocation } from 'react-router-dom';
+import { scrollToSection } from '../utils/scrollToSection';
 
 const FooterSection = styled.footer`
   background-color: ${({ theme }) => theme.colors.text};
@@ -90,7 +21,6 @@ const FooterTop = styled.div`
   grid-template-columns: 1fr 2fr;
   gap: 4rem;
   margin-bottom: 4rem;
-  
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     grid-template-columns: 1fr;
     gap: 3rem;
@@ -101,13 +31,18 @@ const FooterAbout = styled.div`
   max-width: 300px;
 `;
 
-const FooterLogo = styled.div`
+const FooterLogoLink = styled(Link)`
   display: flex;
   align-items: center;
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
   color: ${({ theme }) => theme.colors.white};
+  text-decoration: none;
+  
+  &:hover {
+    color: ${({ theme }) => theme.colors.white};
+  }
   
   svg {
     margin-right: 0.75rem;
@@ -168,15 +103,34 @@ const FooterLinksTitle = styled.h3`
   color: ${({ theme }) => theme.colors.white};
 `;
 
-const FooterLink = styled.a`
+const FooterLink = styled(Link)`
   color: ${({ theme }) => theme.colors.secondary};
-  margin-bottom: 0.75rem;
   text-decoration: none;
   transition: ${({ theme }) => theme.transitions.default};
+  display: block;
+  margin-bottom: 0.75rem;
   
   &:hover {
     color: ${({ theme }) => theme.colors.accent};
-    padding-left: 0.5rem;
+    text-decoration: underline;
+  }
+`;
+
+const ScrollLink = styled(Link)`
+  color: ${({ theme }) => theme.colors.secondary};
+  text-decoration: none;
+  transition: ${({ theme }) => theme.transitions.default};
+  display: block;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  
+  &:hover {
+    color: ${({ theme }) => theme.colors.accent};
+    text-decoration: underline;
+  }
+  
+  &[href^="#"] {
+    cursor: pointer;
   }
 `;
 
@@ -209,3 +163,128 @@ const FooterLegalLinks = styled.div`
     gap: 0.5rem;
   }
 `;
+
+const Footer: React.FC = () => {
+  const currentYear = new Date().getFullYear();
+  const location = useLocation();
+  
+  // Handle scroll to section when location hash changes
+  React.useEffect(() => {
+    if (location.hash) {
+      const element = document.getElementById(location.hash.substring(1));
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location]);
+  
+  const handleScrollClick = (e: React.MouseEvent<HTMLAnchorElement>, to: string) => {
+    if (to.startsWith('#')) {
+      e.preventDefault();
+      scrollToSection(e, to);
+    }
+  };
+  
+  return (
+    <FooterSection>
+      <Container>
+        <FooterTop>
+          <FooterAbout>
+            <FooterLogoLink to="/">
+              <FaShieldAlt />
+              <span>MetaClean Pro</span>
+            </FooterLogoLink>
+            <FooterAboutText>
+              The most secure and private way to remove EXIF metadata from your images. 
+              Your privacy is our top priority.
+            </FooterAboutText>
+            <SocialLinks>
+              <SocialLink 
+                href="https://github.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="GitHub"
+              >
+                <FaGithub />
+              </SocialLink>
+              <SocialLink 
+                href="https://twitter.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="Twitter"
+              >
+                <FaTwitter />
+              </SocialLink>
+              <SocialLink 
+                href="https://linkedin.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="LinkedIn"
+              >
+                <FaLinkedin />
+              </SocialLink>
+            </SocialLinks>
+          </FooterAbout>
+          <FooterLinks>
+            <FooterLinksColumn>
+              <FooterLinksTitle>Product</FooterLinksTitle>
+              <ScrollLink 
+                to="#features" 
+                onClick={(e) => handleScrollClick(e, '#features')}
+              >
+                Features
+              </ScrollLink>
+              <ScrollLink 
+                to="#how-it-works" 
+                onClick={(e) => handleScrollClick(e, '#how-it-works')}
+              >
+                How It Works
+              </ScrollLink>
+              <ScrollLink 
+                to="#faq" 
+                onClick={(e) => handleScrollClick(e, '#faq')}
+              >
+                FAQ
+              </ScrollLink>
+              <ScrollLink 
+                to="#pricing" 
+                onClick={(e) => handleScrollClick(e, '#pricing')}
+              >
+                Pricing
+              </ScrollLink>
+            </FooterLinksColumn>
+            <FooterLinksColumn>
+              <FooterLinksTitle>Company</FooterLinksTitle>
+              <FooterLink to="/about">About Us</FooterLink>
+              <ScrollLink to="/blog">Blog</ScrollLink>
+              <FooterLink to="/contact">Contact</FooterLink>
+              <ScrollLink to="/careers">Careers</ScrollLink>
+            </FooterLinksColumn>
+            <FooterLinksColumn>
+              <FooterLinksTitle>Legal</FooterLinksTitle>
+              <FooterLink to="/privacy-policy">Privacy Policy</FooterLink>
+              <FooterLink to="/terms-of-service">Terms of Service</FooterLink>
+              <FooterLink to="/cookie-policy">Cookie Policy</FooterLink>
+              <FooterLink to="/gdpr">GDPR</FooterLink>
+            </FooterLinksColumn>
+          </FooterLinks>
+        </FooterTop>
+        <FooterBottom>
+          <Copyright>
+            &copy; {currentYear} FixAre Studio. All rights reserved.
+          </Copyright>
+          <FooterLegalLinks>
+            <FooterLink to="/privacy-policy">Privacy Policy</FooterLink>
+            <FooterLink to="/terms-of-service">Terms of Service</FooterLink>
+            <FooterLink to="/cookie-policy">Cookie Policy</FooterLink>
+            <FooterLink to="/gdpr">GDPR</FooterLink>
+          </FooterLegalLinks>
+        </FooterBottom>
+      </Container>
+    </FooterSection>
+  );
+};
+
+// Export as both default and named for backward compatibility
+export { Footer as default };
+export { Footer };

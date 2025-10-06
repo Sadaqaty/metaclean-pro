@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { FaShieldAlt } from 'react-icons/fa';
 
@@ -20,12 +21,17 @@ const HeaderContent = styled.div`
   padding: 1rem 2rem;
 `;
 
-const Logo = styled.div`
+const LogoLink = styled(Link)`
   display: flex;
   align-items: center;
   font-size: 1.5rem;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.text};
+  text-decoration: none;
+  
+  &:hover {
+    color: ${({ theme }) => theme.colors.text};
+  }
   
   svg {
     margin-right: 0.75rem;
@@ -42,12 +48,13 @@ const Nav = styled.nav`
   }
 `;
 
-const NavLink = styled.a`
+const NavLink = styled(Link)`
   color: ${({ theme }) => theme.colors.textLight};
   font-weight: 500;
   text-decoration: none;
   transition: ${({ theme }) => theme.transitions.default};
   position: relative;
+  padding: 0.5rem 0;
   
   &:hover {
     color: ${({ theme }) => theme.colors.text};
@@ -69,7 +76,7 @@ const NavLink = styled.a`
   }
 `;
 
-const CTAButton = styled.button`
+const CTAButton = styled(Link)`
   background-color: ${({ theme }) => theme.colors.accent};
   color: ${({ theme }) => theme.colors.white};
   border: none;
@@ -78,6 +85,8 @@ const CTAButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: ${({ theme }) => theme.transitions.default};
+  text-decoration: none;
+  display: inline-block;
   
   &:hover {
     background-color: ${({ theme }) => theme.colors.text};
@@ -89,19 +98,19 @@ export const Header: React.FC = () => {
   return (
     <HeaderContainer>
       <HeaderContent className="container">
-        <Logo>
+        <LogoLink to="/">
           <FaShieldAlt size={24} />
           MetaClean Pro
-        </Logo>
+        </LogoLink>
         
         <Nav>
-          <NavLink href="#features">Features</NavLink>
-          <NavLink href="#how-it-works">How It Works</NavLink>
-          <NavLink href="#faq">FAQ</NavLink>
-          <NavLink href="#contact">Contact</NavLink>
+          <NavLink to="/#features">Features</NavLink>
+          <NavLink to="/#how-it-works">How It Works</NavLink>
+          <NavLink to="/#faq">FAQ</NavLink>
+          <NavLink to="/#contact">Contact</NavLink>
         </Nav>
         
-        <CTAButton>Get Started</CTAButton>
+        <CTAButton to="/#get-started">Get Started</CTAButton>
       </HeaderContent>
     </HeaderContainer>
   );

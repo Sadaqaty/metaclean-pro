@@ -5,5 +5,5 @@ export * from './Features';
 export * from './HowItWorks';
 export * from './Faq';
 export * from './Contact';
-export * from './Footer';
+export { Footer } from './Footer';
 export * from './SecurityBadges';

@@ -87,7 +87,7 @@ const PrivacyPolicy: React.FC = () => (
 
     <SectionTitle>9. Contact Us</SectionTitle>
     <p>
-      If you have any questions or concerns about this Privacy Policy or your data, please contact us at <a href="mailto:your-email@example.com">your-email@example.com</a>.
+      If you have any questions or concerns about this Privacy Policy or your data, please contact us at <a href="mailto:hartofstone92@gmail.com">hartofstone92@gmail.com</a>.
     </p>
   </PrivacyPolicyContainer>
 );

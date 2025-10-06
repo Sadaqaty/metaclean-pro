@@ -1,19 +1,19 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
-import { FiUpload, FiX, FiCheck } from 'react-icons/fi';
+import { FiUpload, FiX, FiCheck, FiDownload } from 'react-icons/fi';
 
 export const FileUpload: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
+  const [processedFiles, setProcessedFiles] = useState<{ url: string; name: string }[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadComplete, setUploadComplete] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    // Filter for image files
     const imageFiles = acceptedFiles.filter(file => 
       file.type.match('image.*')
     );
-    
     setFiles(prevFiles => [...prevFiles, ...imageFiles]);
   }, []);
 
@@ -25,13 +25,65 @@ export const FileUpload: React.FC = () => {
     if (files.length === 0) return;
     
     setIsUploading(true);
+    setError(null);
     
     try {
-      // Simulate file processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const processed = [];
+      
+      for (const file of files) {
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          const img = new Image();
+          
+          const imgLoadPromise = new Promise<void>((resolve, reject) => {
+            img.onload = () => resolve();
+            img.onerror = () => reject(new Error('Failed to load image'));
+          });
+
+          const url = URL.createObjectURL(new Blob([arrayBuffer], { type: file.type }));
+          img.src = url;
+          
+          await imgLoadPromise;
+          
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          
+          const ctx = canvas.getContext('2d');
+          if (!ctx) throw new Error('Failed to get canvas context');
+          
+          ctx.drawImage(img, 0, 0);
+          
+          const blob = await new Promise<Blob | null>((resolve) => {
+            canvas.toBlob((blob) => resolve(blob), file.type, 0.92);
+          });
+          
+          if (!blob) throw new Error('Failed to process image');
+          
+          const fileName = file.name.replace(/\.(jpe?g|png|webp|tiff?)$/i, '_clean$&');
+          const processedUrl = URL.createObjectURL(blob);
+          
+          processed.push({
+            url: processedUrl,
+            name: fileName
+          });
+          
+          URL.revokeObjectURL(url);
+          
+        } catch (err) {
+          console.error(`Error processing ${file.name}:`, err);
+          setError(prev => 
+            prev ? `${prev}\nFailed to process ${file.name}` : `Failed to process ${file.name}`
+          );
+        }
+      }
+      
+      setProcessedFiles(processed);
       setUploadComplete(true);
+      
     } catch (error) {
       console.error('Error processing files:', error);
+      setError('An error occurred while processing your files. Please try again.');
     } finally {
       setIsUploading(false);
     }
@@ -42,7 +94,7 @@ export const FileUpload: React.FC = () => {
     accept: {
       'image/*': ['.jpeg', '.jpg', '.png', '.tiff', '.webp']
     },
-    maxSize: 10 * 1024 * 1024, // 10MB
+    maxSize: 10 * 1024 * 1024,
   });
 
   return (
@@ -57,7 +109,9 @@ export const FileUpload: React.FC = () => {
           $hasFiles={files.length > 0}
         >
           <input {...getInputProps()} />
-          <UploadIcon />
+          <UploadIcon>
+            <FiUpload />
+          </UploadIcon>
           <DropzoneText>
             {isDragActive
               ? 'Drop the files here...'
@@ -91,68 +145,100 @@ export const FileUpload: React.FC = () => {
           </ActionButton>
         )}
 
+        {error && (
+          <ErrorMessage>
+            <FiX />
+            <span>{error}</span>
+          </ErrorMessage>
+        )}
+
         {uploadComplete && (
-          <SuccessMessage>
-            <FiCheck />
-            <span>Metadata successfully removed! Your files are ready to download.</span>
-          </SuccessMessage>
+          <>
+            <SuccessMessage>
+              <FiCheck />
+              <span>Metadata successfully removed! Your files are ready to download.</span>
+            </SuccessMessage>
+            
+            <DownloadButtons>
+              {processedFiles.map((file, index) => (
+                <DownloadButton key={index} href={file.url} download={file.name}>
+                  <FiDownload />
+                  Download {file.name}
+                </DownloadButton>
+              ))}
+            </DownloadButtons>
+            
+            <ResetButton 
+              onClick={() => {
+                setFiles([]);
+                setProcessedFiles([]);
+                setUploadComplete(false);
+                processedFiles.forEach(file => URL.revokeObjectURL(file.url));
+              }}
+            >
+              Process More Files
+            </ResetButton>
+          </>
         )}
       </Container>
     </UploadSection>
   );
 };
 
+// Styled Components
 const UploadSection = styled.section`
   padding: 4rem 0;
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const Container = styled.div`
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.5rem;
 `;
 
 const SectionTitle = styled.h2`
+  font-size: 2.5rem;
+  color: ${({ theme }) => theme.colors.primary};
   text-align: center;
   margin-bottom: 1rem;
 `;
 
 const SectionSubtitle = styled.p`
-  text-align: center;
+  font-size: 1.125rem;
   color: ${({ theme }) => theme.colors.textLight};
+  text-align: center;
   margin-bottom: 2rem;
 `;
 
 const DropzoneContainer = styled.div<{ $isDragActive: boolean; $hasFiles: boolean }>`
-  border: 2px dashed 
-    ${({ theme, $isDragActive }) => 
-      $isDragActive ? theme.colors.accent : theme.colors.secondary};
+  border: 2px dashed ${({ theme, $isDragActive }) => 
+    $isDragActive ? theme.colors.primary : theme.colors.secondary};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   padding: 3rem 2rem;
   text-align: center;
   cursor: pointer;
-  transition: ${({ theme }) => theme.transitions.default};
+  transition: all 0.3s ease;
   background-color: ${({ theme, $isDragActive }) => 
-    $isDragActive ? 'rgba(255, 199, 167, 0.1)' : theme.colors.secondary};
+    $isDragActive ? theme.colors.primaryLight : 'transparent'};
   margin-bottom: ${({ $hasFiles }) => ($hasFiles ? '2rem' : '0')};
-  
+
   &:hover {
-    border-color: ${({ theme }) => theme.colors.accent};
-    background-color: rgba(255, 199, 167, 0.1);
+    border-color: ${({ theme }) => theme.colors.primary};
+    background-color: ${({ theme }) => theme.colors.primaryLight};
   }
 `;
 
-const UploadIcon = styled(FiUpload)`
+const UploadIcon = styled.div`
   font-size: 2.5rem;
-  color: ${({ theme }) => theme.colors.accent};
+  color: ${({ theme }) => theme.colors.primary};
   margin-bottom: 1rem;
 `;
 
 const DropzoneText = styled.p`
   font-size: 1.125rem;
-  margin-bottom: 0.5rem;
   color: ${({ theme }) => theme.colors.text};
+  margin-bottom: 0.5rem;
 `;
 
 const FileTypes = styled.span`
@@ -205,10 +291,10 @@ const RemoveButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: ${({ theme }) => theme.transitions.default};
-  
+  transition: all 0.2s ease;
+
   &:hover {
-    background-color: ${({ theme }) => theme.colors.secondary};
+    background-color: ${({ theme }) => theme.colors.errorLight};
   }
 `;
 
@@ -218,41 +304,101 @@ const ActionButton = styled.button`
   max-width: 300px;
   margin: 2rem auto 0;
   padding: 1rem 2rem;
-  background-color: ${({ theme }) => theme.colors.accent};
+  background-color: ${({ theme }) => theme.colors.primary};
   color: white;
   border: none;
   border-radius: ${({ theme }) => theme.borderRadius.md};
   font-size: 1.125rem;
   font-weight: 600;
   cursor: pointer;
-  transition: ${({ theme }) => theme.transitions.default};
-  
+  transition: all 0.3s ease;
+
   &:hover {
+    background-color: ${({ theme }) => theme.colors.primaryDark};
     transform: translateY(-2px);
-    box-shadow: ${({ theme }) => theme.shadows.md};
   }
-  
+
   &:disabled {
-    background-color: ${({ theme }) => theme.colors.textLight};
+    background-color: ${({ theme }) => theme.colors.secondary};
     cursor: not-allowed;
     transform: none;
-    box-shadow: none;
   }
+`;
+
+const ErrorMessage = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: ${({ theme }) => theme.colors.errorLight};
+  color: ${({ theme }) => theme.colors.error};
+  padding: 1rem;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  white-space: pre-line;
 `;
 
 const SuccessMessage = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  background-color: rgba(72, 187, 120, 0.1);
+  gap: 0.5rem;
+  background-color: ${({ theme }) => theme.colors.successLight};
   color: ${({ theme }) => theme.colors.success};
   padding: 1rem;
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  margin-top: 2rem;
-  font-weight: 500;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+`;
+
+const DownloadButtons = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  width: 100%;
+`;
+
+const DownloadButton = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  text-align: center;
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.primaryDark};
+    transform: translateY(-2px);
+  }
   
   svg {
-    font-size: 1.25rem;
+    font-size: 1.1em;
   }
 `;
+
+const ResetButton = styled.button`
+  margin: 1.5rem auto 0;
+  background: none;
+  border: 2px solid ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
+  padding: 0.75rem 1.5rem;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: block;
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.primaryLight};
+    transform: translateY(-2px);
+  }
+`;
+

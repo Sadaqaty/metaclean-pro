@@ -5,13 +5,13 @@ import { theme } from './theme';
 import {
   Header,
   Hero,
-  FileUpload,
   Features,
   HowItWorks,
   Faq,
   Contact,
   Footer,
   SecurityBadges,
+  FileUpload,
 } from './components';
 
 function App() {

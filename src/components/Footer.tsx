@@ -50,7 +50,7 @@ export const Footer: React.FC = () => {
             
             <FooterLinksColumn>
               <FooterLinksTitle>Legal</FooterLinksTitle>
-              <FooterLink href="#">Privacy Policy</FooterLink>
+              <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
               <FooterLink href="#">Terms of Service</FooterLink>
               <FooterLink href="#">Cookie Policy</FooterLink>
               <FooterLink href="#">GDPR</FooterLink>
@@ -63,7 +63,7 @@ export const Footer: React.FC = () => {
             &copy; {currentYear} MetaClean Pro. All rights reserved.
           </Copyright>
           <FooterLegalLinks>
-            <FooterLink href="#">Privacy Policy</FooterLink>
+            <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
             <FooterLink href="#">Terms of Service</FooterLink>
             <FooterLink href="#">Cookie Policy</FooterLink>
           </FooterLegalLinks>

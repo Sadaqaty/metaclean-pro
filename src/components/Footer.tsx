@@ -1,13 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FaGithub, FaTwitter, FaLinkedin, FaShieldAlt } from 'react-icons/fa';
+import { FaGithub, FaTwitter, FaLinkedin, FaShieldAlt, FaInstagram } from 'react-icons/fa';
 import { Link, useLocation } from 'react-router-dom';
 import { scrollToSection } from '../utils/scrollToSection';
 
 const FooterSection = styled.footer`
   background-color: ${({ theme }) => theme.colors.text};
   color: ${({ theme }) => theme.colors.white};
-  padding: 4rem 0 2rem;
+  padding: 5rem 0 3rem;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    padding: 3rem 0 2rem;
+  }
 `;
 
 const Container = styled.div`
@@ -88,7 +92,8 @@ const FooterLinks = styled.div`
   gap: 2rem;
   
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1rem;
   }
 `;
 
@@ -142,9 +147,10 @@ const FooterBottom = styled.div`
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    flex-direction: column;
-    gap: 1rem;
+    flex-direction: column-reverse;
+    gap: 1.5rem;
     text-align: center;
+    padding-top: 1.5rem;
   }
 `;
 
@@ -167,7 +173,7 @@ const FooterLegalLinks = styled.div`
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   const location = useLocation();
-  
+
   // Handle scroll to section when location hash changes
   React.useEffect(() => {
     if (location.hash) {
@@ -177,14 +183,14 @@ const Footer: React.FC = () => {
       }
     }
   }, [location]);
-  
+
   const handleScrollClick = (e: React.MouseEvent<HTMLAnchorElement>, to: string) => {
     if (to.startsWith('#')) {
       e.preventDefault();
       scrollToSection(e, to);
     }
   };
-  
+
   return (
     <FooterSection>
       <Container>
@@ -195,30 +201,30 @@ const Footer: React.FC = () => {
               <span>MetaClean Pro</span>
             </FooterLogoLink>
             <FooterAboutText>
-              The most secure and private way to remove EXIF metadata from your images. 
+              The most secure and private way to remove EXIF metadata from your images.
               Your privacy is our top priority.
             </FooterAboutText>
             <SocialLinks>
-              <SocialLink 
-                href="https://github.com" 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <SocialLink
+                href="https://github.com/SecureNet-Dynamics"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="GitHub"
               >
                 <FaGithub />
               </SocialLink>
-              <SocialLink 
-                href="https://twitter.com" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                aria-label="Twitter"
+              <SocialLink
+                href="https://www.instagram.com/fixare.studio/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
               >
-                <FaTwitter />
+                <FaInstagram />
               </SocialLink>
-              <SocialLink 
-                href="https://linkedin.com" 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <SocialLink
+                href="https://www.linkedin.com/company/fixare-studio/"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="LinkedIn"
               >
                 <FaLinkedin />
@@ -228,26 +234,26 @@ const Footer: React.FC = () => {
           <FooterLinks>
             <FooterLinksColumn>
               <FooterLinksTitle>Product</FooterLinksTitle>
-              <ScrollLink 
-                to="#features" 
+              <ScrollLink
+                to="#features"
                 onClick={(e) => handleScrollClick(e, '#features')}
               >
                 Features
               </ScrollLink>
-              <ScrollLink 
-                to="#how-it-works" 
+              <ScrollLink
+                to="#how-it-works"
                 onClick={(e) => handleScrollClick(e, '#how-it-works')}
               >
                 How It Works
               </ScrollLink>
-              <ScrollLink 
-                to="#faq" 
+              <ScrollLink
+                to="#faq"
                 onClick={(e) => handleScrollClick(e, '#faq')}
               >
                 FAQ
               </ScrollLink>
-              <ScrollLink 
-                to="#pricing" 
+              <ScrollLink
+                to="#pricing"
                 onClick={(e) => handleScrollClick(e, '#pricing')}
               >
                 Pricing
@@ -255,17 +261,17 @@ const Footer: React.FC = () => {
             </FooterLinksColumn>
             <FooterLinksColumn>
               <FooterLinksTitle>Company</FooterLinksTitle>
-              <FooterLink to="/about">About Us</FooterLink>
-              <ScrollLink to="/blog">Blog</ScrollLink>
-              <FooterLink to="/contact">Contact</FooterLink>
-              <ScrollLink to="/careers">Careers</ScrollLink>
+              <FooterLink to="https://fixare.studio">Fixare Studio</FooterLink>
+              <ScrollLink to="https://chunker.fixare.studio">Chunker</ScrollLink>
+              <FooterLink to="https://instaconnect.fixare.studio/">InstaConnect Pro</FooterLink>
+              <ScrollLink to="https://fixare.studio/careers/">Careers</ScrollLink>
             </FooterLinksColumn>
             <FooterLinksColumn>
-              <FooterLinksTitle>Legal</FooterLinksTitle>
-              <FooterLink to="/privacy-policy">Privacy Policy</FooterLink>
-              <FooterLink to="/terms-of-service">Terms of Service</FooterLink>
-              <FooterLink to="/cookie-policy">Cookie Policy</FooterLink>
-              <FooterLink to="/gdpr">GDPR</FooterLink>
+              <FooterLinksTitle>Contact</FooterLinksTitle>
+              <FooterLink to="mailto:sharafaty@fixare.studio">CEO: Sharafat Ali</FooterLink>
+              <FooterLink to="mailto:sadaqaty@fixare.studio">CTO: Sadaqat Ali</FooterLink>
+              <FooterLink to="mailto:shaeen@fixare.studio">Marketing: Shaheen</FooterLink>
+              <FooterLink to="mailto:info@fixare.studio">General: Info</FooterLink>
             </FooterLinksColumn>
           </FooterLinks>
         </FooterTop>

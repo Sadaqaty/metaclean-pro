@@ -1,9 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyles } from './GlobalStyles';
 import { theme } from './theme';
-import { Header, Hero, Features, HowItWorks, Faq, SecurityBadges, FileUpload, Footer } from './components';
+import { Hero, Features, HowItWorks, Faq, SecurityBadges, FileUpload, Footer } from './components';
 import { ContactPage } from './pages/ContactPage';
 import CookiePolicy from './pages/CookiePolicy';
 import GDPR from './pages/GDPR';
@@ -15,7 +15,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <GlobalStyles />
         <div className="app">
-          <Header />
+
           <Routes>
             <Route path="/" element={
               <main>

@@ -4,7 +4,8 @@ import { FaShieldAlt, FaArrowRight } from 'react-icons/fa';
 
 const HeroSection = styled.section`
   background-color: ${({ theme }) => theme.colors.primary};
-  padding: 4rem 0;
+  background-color: ${({ theme }) => theme.colors.primary};
+  padding: 8rem 0 4rem;
   text-align: center;
 `;
 
@@ -12,6 +13,10 @@ const HeroContent = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: 0 1.5rem;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    padding: 0 1rem;
+  }
 `;
 
 const Badge = styled.span`

@@ -43,10 +43,15 @@ const ContactContainer = styled.div<ContactContainerProps>`
   margin: 0 auto;
   background: #fff;
   border-radius: 12px;
-  box-shadow: ${({ $isPage }) => 
+  box-shadow: ${({ $isPage }) =>
     $isPage ? '0 10px 30px rgba(0, 0, 0, 0.05)' : 'none'};
   overflow: hidden;
   padding: ${({ $isPage }) => ($isPage ? '2.5rem' : '0')};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    flex-direction: column;
+    padding: ${({ $isPage }) => ($isPage ? '1.5rem' : '0')};
+  }
 `;
 
 const ContactInfo = styled.div`
@@ -105,7 +110,7 @@ interface StyledFormProps {
 
 const StyledForm = styled.form.withConfig({
   shouldForwardProp: (prop) => prop !== '$isPage',
-})<StyledFormProps>`
+}) <StyledFormProps>`
   flex: 1.5;
   display: flex;
   flex-direction: column;
@@ -277,12 +282,12 @@ export const ContactForm: React.FC<ContactFormProps> = ({ isPage = false }) => {
     subject: '',
     message: ''
   });
-  
-  const [status, setStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ 
-    type: null, 
-    message: '' 
+
+  const [status, setStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({
+    type: null,
+    message: ''
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{
     success: boolean;
@@ -297,7 +302,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ isPage = false }) => {
       ...prev,
       [name]: value
     }));
-    
+
     // Clear status when user starts typing
     if (status.type) {
       setStatus({ type: null, message: '' });
@@ -312,19 +317,19 @@ export const ContactForm: React.FC<ContactFormProps> = ({ isPage = false }) => {
     try {
       // Simulate form submission
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       setSubmitStatus({
         success: true,
         message: 'Thank you for your message! We\'ll get back to you soon.'
       });
-      
+
       // Reset form
-      setFormData({ 
-        name: '', 
-        email: '', 
+      setFormData({
+        name: '',
+        email: '',
         phone: '',
         subject: '',
-        message: '' 
+        message: ''
       });
     } catch (error) {
       setSubmitStatus({
@@ -346,22 +351,22 @@ export const ContactForm: React.FC<ContactFormProps> = ({ isPage = false }) => {
             </InfoIcon>
             <div>
               <InfoTitle>Email Us</InfoTitle>
-              <InfoText>hartofstone92@gmail.com</InfoText>
+              <InfoText>info@fixare.studio</InfoText>
               <InfoTextSecondary>We'll respond within 24 hours</InfoTextSecondary>
             </div>
           </InfoItem>
-          
+
           <InfoItem>
             <InfoIcon>
               <FiPhoneCall />
             </InfoIcon>
             <div>
               <InfoTitle>Call Us</InfoTitle>
-              <InfoText>+[REDACTED]</InfoText>
+              <InfoText>+92 305 7383987</InfoText>
               <InfoTextSecondary>Mon-Fri, 9am-6pm EST</InfoTextSecondary>
             </div>
           </InfoItem>
-          
+
           <InfoItem>
             <InfoIcon>
               <FiMapPin />
@@ -383,25 +388,25 @@ export const ContactForm: React.FC<ContactFormProps> = ({ isPage = false }) => {
             <FormSubtitle>We're here to help and answer any questions you might have.</FormSubtitle>
           </FormHeader>
         )}
-        
+
         {submitStatus && (
           <StatusMessage $success={submitStatus.success}>
             {submitStatus.message}
           </StatusMessage>
         )}
-        
+
         <FormGroup>
           <Label htmlFor="name">
             <FiUser /> Full Name <Required>*</Required>
           </Label>
-          <Input 
-            type="text" 
-            id="name" 
-            name="name" 
+          <Input
+            type="text"
+            id="name"
+            name="name"
             value={formData.name}
             onChange={handleChange}
             placeholder="John Doe"
-            required 
+            required
           />
         </FormGroup>
 
@@ -410,14 +415,14 @@ export const ContactForm: React.FC<ContactFormProps> = ({ isPage = false }) => {
             <Label htmlFor="email">
               <FiMail /> Email Address <Required>*</Required>
             </Label>
-            <Input 
-              type="email" 
-              id="email" 
-              name="email" 
+            <Input
+              type="email"
+              id="email"
+              name="email"
               value={formData.email}
               onChange={handleChange}
               placeholder="your.email@example.com"
-              required 
+              required
             />
           </FormGroup>
 
@@ -425,10 +430,10 @@ export const ContactForm: React.FC<ContactFormProps> = ({ isPage = false }) => {
             <Label htmlFor="phone">
               <FiPhone /> Phone Number
             </Label>
-            <Input 
-              type="tel" 
-              id="phone" 
-              name="phone" 
+            <Input
+              type="tel"
+              id="phone"
+              name="phone"
               value={formData.phone}
               onChange={handleChange}
               placeholder="+1 (___) ___-____"
@@ -440,8 +445,8 @@ export const ContactForm: React.FC<ContactFormProps> = ({ isPage = false }) => {
           <Label htmlFor="subject">
             <FiMessageSquare /> Subject
           </Label>
-          <select 
-            id="subject" 
+          <select
+            id="subject"
             value={formData.subject}
             onChange={handleChange}
             style={{
@@ -466,9 +471,9 @@ export const ContactForm: React.FC<ContactFormProps> = ({ isPage = false }) => {
           <Label htmlFor="message">
             <FiMessageSquare /> Message
           </Label>
-          <TextArea 
-            id="message" 
-            name="message" 
+          <TextArea
+            id="message"
+            name="message"
             value={formData.message}
             onChange={handleChange}
             placeholder="Your message here..."

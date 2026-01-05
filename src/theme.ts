@@ -22,22 +22,22 @@ export interface ThemeColors {
 }
 
 const colors: ThemeColors = {
-  primary: '#F8FAB4',    // ButterCream
-  primaryLight: '#FCFDD8', // Lighter version of primary
-  primaryDark: '#F5F890',  // Darker version of primary
-  secondary: '#FEE2AD',  // PeachCream
-  accent: '#FFC7A7',     // SalmonPink
-  text: '#2D3748',       // Dark gray for text
-  textLight: '#4A5568',  // Lighter gray for secondary text
+  primary: '#F0F9FF',    // Very plain/light blue (Sky 50) for main backgrounds
+  primaryLight: '#FFFFFF', // Pure white
+  primaryDark: '#BAE6FD',  // Sky 200
+  secondary: '#E0F2FE',  // Sky 100
+  accent: '#0284C7',     // Sky 600 - darker blue for better contrast on buttons
+  text: '#0F172A',       // Slate 900 - high contrast text
+  textLight: '#475569',  // Slate 600
   white: '#FFFFFF',
   black: '#000000',
-  success: '#48BB78',    // Green for success messages
-  error: '#F56565',      // Red for errors
-  warning: '#ED8936',    // Orange for warnings
-  errorLight: '#FED7D7', // Light red for error backgrounds
-  successLight: '#C6F6D5', // Light green for success backgrounds
-  border: '#E2E8F0',     // Default border color
-  background: '#F7FAFC', // Default background color
+  success: '#22C55E',    // Green side
+  error: '#EF4444',      // Red side
+  warning: '#F59E0B',    // Amber side
+  errorLight: '#FEE2E2', // Red 50
+  successLight: '#DCFCE7', // Green 50
+  border: '#E2E8F0',     // Slate 200
+  background: '#FFFFFF', // White
 } as const;
 
 // Define the complete theme

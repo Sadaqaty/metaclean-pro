@@ -92,8 +92,8 @@ const FooterLinks = styled.div`
   gap: 2rem;
   
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem 0.5rem;
   }
 `;
 
@@ -106,6 +106,11 @@ const FooterLinksTitle = styled.h3`
   font-size: 1.125rem;
   margin-bottom: 1.5rem;
   color: ${({ theme }) => theme.colors.white};
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
 `;
 
 const FooterLink = styled(Link)`
@@ -114,10 +119,15 @@ const FooterLink = styled(Link)`
   transition: ${({ theme }) => theme.transitions.default};
   display: block;
   margin-bottom: 0.75rem;
+  white-space: nowrap;
   
   &:hover {
     color: ${({ theme }) => theme.colors.accent};
     text-decoration: underline;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: 0.8rem;
   }
 `;
 
@@ -128,6 +138,7 @@ const ScrollLink = styled(Link)`
   display: block;
   margin-bottom: 0.75rem;
   cursor: pointer;
+  white-space: nowrap;
   
   &:hover {
     color: ${({ theme }) => theme.colors.accent};
@@ -136,6 +147,10 @@ const ScrollLink = styled(Link)`
   
   &[href^="#"] {
     cursor: pointer;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: 0.8rem;
   }
 `;
 
@@ -165,8 +180,7 @@ const FooterLegalLinks = styled.div`
   gap: 1.5rem;
   
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    flex-direction: column;
-    gap: 0.5rem;
+    display: none;
   }
 `;
 
